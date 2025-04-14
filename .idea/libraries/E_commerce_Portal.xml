@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="E-commerce Portal">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/order-service.zip!/" />
+      <root url="jar://$PROJECT_DIR$/product-service.zip!/" />
+      <root url="jar://$PROJECT_DIR$/inventory-service.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
