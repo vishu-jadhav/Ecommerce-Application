@@ -5,6 +5,8 @@ import com.EcomerceApp.product_service.dto.ProductDto;
 import com.EcomerceApp.product_service.dto.ProductResponse;
 import com.EcomerceApp.product_service.model.Product;
 import com.EcomerceApp.product_service.service.ProductService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +16,7 @@ import java.util.List;
 @RequestMapping("/api/product")
 public class ProductController {
 
-    private ProductService productService;
+    private final ProductService productService;
 
     public ProductController(ProductService productService) {
         this.productService = productService;
@@ -22,7 +24,7 @@ public class ProductController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createProduct(@RequestBody ProductDto productDto){
+    public void createProduct(@Valid @RequestBody ProductDto productDto){
 
         Product saveProduct=productService.saveProduct(productDto);
         System.out.println("Product saved ");
@@ -31,20 +33,20 @@ public class ProductController {
 
     @GetMapping("/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    public ProductResponse getById(@PathVariable Long productId){
+    public ProductResponse getById(@Valid @PathVariable  Long productId){
         return productService.getById(productId);
     }
 
     @PutMapping("/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    public ProductResponse updateProduct(@PathVariable Long id, @RequestBody ProductDto productDto){
+    public ProductResponse updateProduct(@Valid @PathVariable Long id, @RequestBody ProductDto productDto){
 
         return productService.updateProduct(id,productDto);
     }
 
     @DeleteMapping("/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deletePoduct(@PathVariable Long productId){
+    public void deletePoduct( @Valid @PathVariable Long productId){
 
         productService.deleteProduct(productId);
     }
