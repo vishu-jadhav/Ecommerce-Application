@@ -7,6 +7,7 @@ import com.EcomerceApp.order_service.dto.OrderRequest;
 import com.EcomerceApp.order_service.model.Order;
 import com.EcomerceApp.order_service.model.OrderLineItems;
 import com.EcomerceApp.order_service.repo.OrderRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -21,12 +22,14 @@ public class OrderServiceImpl implements OrderService{
 
     private final OrderRepository orderRepository;
     private final InventoryClient inventoryClient;
+    private final ObjectMapper mapper;
    // private final RestTemplate restTemplate;
 
 
-    public OrderServiceImpl(OrderRepository orderRepository,InventoryClient inventoryClient) {
+    public OrderServiceImpl(OrderRepository orderRepository, InventoryClient inventoryClient, ObjectMapper mapper) {
         this.orderRepository = orderRepository;
         this.inventoryClient=inventoryClient;
+        this.mapper = mapper;
     }
 
 
@@ -63,7 +66,7 @@ public class OrderServiceImpl implements OrderService{
         order.setOrderNumber(UUID.randomUUID().toString());
 
         List<OrderLineItems> orderLineItemsList=orderRequest.getOrderLineItemLists().stream()
-                .map(this::mapToOrderLine)
+                .map(orders-> mapper.convertValue(orders, OrderLineItems.class) )
                 .toList();
 
         order.setOrderLineItemsList(orderLineItemsList);
@@ -73,12 +76,12 @@ public class OrderServiceImpl implements OrderService{
 
     }
 
-    private OrderLineItems mapToOrderLine(OrderLineItemDto orderLineListDto) {
-
-        OrderLineItems o=new OrderLineItems();
-        o.setPrice(orderLineListDto.getPrice());
-        o.setQuantity(orderLineListDto.getQuantity());
-        o.setSkuCode(orderLineListDto.getSkuCode());
-        return o;
-    }
+//    private OrderLineItems mapToOrderLine(OrderLineItemDto orderLineListDto) {
+//
+//        OrderLineItems o=new OrderLineItems();
+//        o.setPrice(orderLineListDto.getPrice());
+//        o.setQuantity(orderLineListDto.getQuantity());
+//        o.setSkuCode(orderLineListDto.getSkuCode());
+//        return o;
+//    }
 }

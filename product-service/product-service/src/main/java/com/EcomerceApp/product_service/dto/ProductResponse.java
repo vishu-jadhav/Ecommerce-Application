@@ -15,6 +15,9 @@ public class ProductResponse {
     private String name;
     private String description;
     private BigDecimal price;
+    private Integer quantity;
+    private String skuCode;  // new
+}
 
 //    public ProductResponse() {
 //    }
@@ -79,4 +82,4 @@ public class ProductResponse {
 //                ", price=" + price +
 //                '}';
 //    }
-}
+//}

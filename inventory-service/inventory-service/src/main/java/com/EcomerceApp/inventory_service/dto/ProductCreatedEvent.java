@@ -1,50 +1,29 @@
-package com.EcomerceApp.product_service.model;
+package com.EcomerceApp.inventory_service.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.Objects;
 
-@Entity
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class Product {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@Getter
+@Setter
+public class ProductCreatedEvent {
     private Long id;
-
     private String name;
     private String description;
     private BigDecimal price;
     private Integer quantity;
+    private String skuCode;
 
-    private String skuCode; // NEW: SKU for product identification
-
-    // Optional: constructor without ID (for creating new products)
-    public Product(String name, String description, BigDecimal price, Integer quantity, String skuCode) {
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.quantity = quantity;
-        this.skuCode = skuCode;
+    public ProductCreatedEvent() {
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
-        return Objects.equals(id, product.id) &&
-                Objects.equals(name, product.name) &&
-                Objects.equals(description, product.description) &&
-                Objects.equals(price, product.price) &&
-                Objects.equals(quantity, product.quantity) &&
-                Objects.equals(skuCode, product.skuCode);
+        ProductCreatedEvent that = (ProductCreatedEvent) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(price, that.price) && Objects.equals(quantity, that.quantity) && Objects.equals(skuCode, that.skuCode);
     }
 
     @Override
@@ -97,6 +76,15 @@ public class Product {
     }
 
     public void setSkuCode(String skuCode) {
+        this.skuCode = skuCode;
+    }
+
+    public ProductCreatedEvent(Long id, String name, String description, BigDecimal price, Integer quantity, String skuCode) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.quantity = quantity;
         this.skuCode = skuCode;
     }
 }

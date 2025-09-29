@@ -1,6 +1,8 @@
 package com.EcomerceApp.product_service.service;
 
 
+import com.EcomerceApp.product_service.config.ProductEventProducer;
+import com.EcomerceApp.product_service.dto.ProductCreatedEvent;
 import com.EcomerceApp.product_service.dto.ProductDto;
 import com.EcomerceApp.product_service.dto.ProductResponse;
 import com.EcomerceApp.product_service.exception.ProductNotFoundException;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,10 +21,12 @@ public class ProductServiceImpl implements ProductService {
 
     private final ObjectMapper mapper;
     private final ProductRepository productRepo;
+    private final  ProductEventProducer producer;
 
-    public ProductServiceImpl(ObjectMapper mapper, ProductRepository productRepo) {
+    public ProductServiceImpl(ObjectMapper mapper, ProductRepository productRepo, ProductEventProducer producer) {
         this.mapper = mapper;
         this.productRepo = productRepo;
+        this.producer = producer;
     }
 
     @Override
@@ -34,7 +39,20 @@ public class ProductServiceImpl implements ProductService {
 //        For your E-commerce microservices:
 //        Use ModelMapper (or MapStruct if you want compile-time mapping) for DTO ↔ Entity conversions.
 //        Use ObjectMapper only for JSON → Object or Object → JSON operations.
-        return productRepo.save( product);
+
+        // Generate SKU code (can be any unique pattern)
+        product.setSkuCode(generateSkuCode(product.getName()));
+
+        Product savedProduct=productRepo.save( product);
+
+
+        //produce event for Product created event
+
+        ProductCreatedEvent event= mapper.convertValue(product,ProductCreatedEvent.class);
+        producer.publishProductCreatedEvent(event);
+
+
+        return savedProduct;
     }
 
     @Override
@@ -52,6 +70,7 @@ public class ProductServiceImpl implements ProductService {
         product.setName(productDto.getName());
         product.setDescription(productDto.getDescription());
         product.setPrice(productDto.getPrice());
+        product.setQuantity(productDto.getQuantity());
 
         productRepo.save(product);
 
@@ -74,6 +93,11 @@ public class ProductServiceImpl implements ProductService {
                 .map(product -> mapper.convertValue(product,ProductResponse.class)) // using your private method
                 .collect(Collectors.toList());
 
+    }
+
+    private String generateSkuCode(String productName) {
+        String randomId = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        return productName.replaceAll("\\s+", "-").toUpperCase() + "-" + randomId;
     }
 
 //    private ProductResponse ToProductResponse(Product pr) {

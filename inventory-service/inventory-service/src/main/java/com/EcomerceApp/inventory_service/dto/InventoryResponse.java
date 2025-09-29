@@ -4,19 +4,14 @@ import lombok.Builder;
 
 import java.util.Objects;
 
-@Builder
+//@Builder
 public class InventoryResponse {
 
     private String skuCode;
-    private boolean isInStock;
+    private InventoryStatus status;
+    private int availableQty;
 
-    public InventoryResponse() {
-    }
-
-    public InventoryResponse(String skuCode, boolean isInStock) {
-        this.skuCode = skuCode;
-        this.isInStock = isInStock;
-    }
+    // Getters & Setters
 
     public String getSkuCode() {
         return skuCode;
@@ -26,31 +21,40 @@ public class InventoryResponse {
         this.skuCode = skuCode;
     }
 
-    public boolean isInStock() {
-        return isInStock;
+    public InventoryStatus getStatus() {
+        return status;
     }
 
-    public void setInStock(boolean inStock) {
-        isInStock = inStock;
+    public void setStatus(InventoryStatus status) {
+        this.status = status;
     }
 
-    @Override
-    public String toString() {
-        return "InventoryResponse{" +
-                "skuCode='" + skuCode + '\'' +
-                ", isInStock=" + isInStock +
-                '}';
+    public int getAvailableQty() {
+        return availableQty;
+    }
+
+    public void setAvailableQty(int availableQty) {
+        this.availableQty = availableQty;
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         InventoryResponse that = (InventoryResponse) o;
-        return isInStock == that.isInStock && Objects.equals(skuCode, that.skuCode);
+        return availableQty == that.availableQty && Objects.equals(skuCode, that.skuCode) && status == that.status;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(skuCode, isInStock);
+        return Objects.hash(skuCode, status, availableQty);
+    }
+
+    @Override
+    public String toString() {
+        return "InventoryResponse{" +
+                "skuCode='" + skuCode + '\'' +
+                ", status=" + status +
+                ", availableQty=" + availableQty +
+                '}';
     }
 }
